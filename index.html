@@ -23,8 +23,6 @@
       --text-main: #9cb3a8;
       --text-highlight: #4ade80;
       --text-error: #ef4444;
-      --btn-restart: #34d399;
-      --btn-home: #e06c55;
     }
 
     * {
@@ -41,7 +39,6 @@
       height: 100dvh;
       overflow: hidden !important;
       background-color: var(--bg-grid);
-      /* Grid line background matching the screenshot */
       background-image: 
         linear-gradient(to right, rgba(26, 54, 46, 0.4) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(26, 54, 46, 0.4) 1px, transparent 1px);
@@ -52,7 +49,7 @@
       flex-direction: column;
     }
 
-    /* TOP NETWORK & QUICKTOOLS NAV STRIP */
+    /* TOP NETWORK STRIP */
     .top-strip {
       height: 32px;
       background: rgba(10, 20, 17, 0.95);
@@ -72,21 +69,20 @@
     }
     .top-strip a:hover { color: #fff; }
 
-    /* MAIN CONTAINER (CENTERED JUST LIKE SCREENSHOT) */
+    /* MAIN CONTAINER */
     .test-wrapper {
       flex: 1;
       max-width: 960px;
       width: 100%;
       margin: 0 auto;
-      padding: 18px 24px 10px;
+      padding: 16px 24px 10px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       gap: 12px;
       overflow: hidden;
+      position: relative;
     }
 
-    /* HEADER TEXTS */
     .main-heading {
       font-size: clamp(1.1rem, 2.2vw, 1.45rem);
       font-weight: 700;
@@ -107,28 +103,28 @@
       margin-top: 2px;
     }
 
-    /* STATUS CONTROL STRIP (MIRRORS SCREENSHOT BAR) */
+    /* STATUS CONTROL STRIP */
     .status-strip {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      background: rgba(17, 34, 29, 0.7);
+      background: rgba(17, 34, 29, 0.75);
       border: 1px solid var(--border-color);
       border-radius: 9999px;
       padding: 6px 14px;
-      margin-top: 6px;
+      margin-top: 4px;
       flex-wrap: wrap;
     }
 
     .status-left, .status-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .pill-select {
-      background: rgba(13, 26, 22, 0.8);
+      background: rgba(13, 26, 22, 0.85);
       border: 1px solid var(--border-color);
       color: #c9ded5;
       font-size: 0.76rem;
@@ -139,7 +135,6 @@
       cursor: pointer;
     }
 
-    /* LIVE METRICS */
     .metric-timer {
       font-size: 1.35rem;
       font-weight: 800;
@@ -172,12 +167,12 @@
       gap: 5px;
     }
 
-    /* TRACK AREA (WHITE CAR ON DASHED LINE) */
+    /* TRACK SECTION (WHITE RETRO CAR ON DASHED LANE) */
     .track-section {
       position: relative;
       width: 100%;
       height: 75px;
-      margin: 8px 0;
+      margin: 6px 0;
       display: flex;
       align-items: flex-end;
     }
@@ -190,19 +185,18 @@
       border-bottom: 2px dashed rgba(156, 179, 168, 0.4);
     }
 
-    /* RETRO WHITE HATCHBACK CAR FROM SCREENSHOT */
     .car-container {
       position: absolute;
       bottom: 14px;
       left: 10px;
-      transition: left 0.15s linear;
+      transition: left 0.12s linear;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .car-badge {
-      background: rgba(17, 34, 29, 0.9);
+      background: rgba(17, 34, 29, 0.95);
       border: 1px solid var(--border-color);
       color: #e5ede9;
       font-size: 0.65rem;
@@ -219,17 +213,22 @@
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
     }
 
-    /* PASSAGE PARAGRAPH AREA (MONOSPACE GREEN-CARET VIEW) */
-    .passage-card {
+    /* PASSAGE PARAGRAPH AREA */
+    .passage-container {
+      position: relative;
       background: transparent;
       padding: 8px 4px;
+      min-height: 160px;
+      cursor: text;
+    }
+
+    .passage-card {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-size: clamp(1.2rem, 2.5vw, 1.55rem);
       line-height: 1.85;
       color: #9cb3a8;
       overflow-y: auto;
-      max-height: 240px;
-      user-select: none;
+      max-height: 220px;
       word-break: normal;
       overflow-wrap: break-word;
     }
@@ -251,7 +250,9 @@
       text-decoration: line-through;
     }
 
-    /* BLINKING GREEN CARET */
+    .char-typed-ok { color: var(--accent-green); }
+    .char-typed-bad { background: rgba(239, 68, 68, 0.3); color: var(--text-error); border-radius: 2px; }
+
     .caret-cursor {
       display: inline-block;
       width: 2.5px;
@@ -266,13 +267,31 @@
       50% { opacity: 0; }
     }
 
-    /* BOTTOM BUTTONS ROW (EXACT COLORS FROM SCREENSHOT) */
+    /* INVISIBLE DIRECT INPUT RECEIVER ACROSS PASSAGE AREA */
+    #directInput {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.001;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: transparent;
+      caret-color: transparent;
+      cursor: text;
+      z-index: 10;
+      font-size: 16px;
+    }
+
+    /* BOTTOM BUTTONS ROW */
     .bottom-bar {
       display: flex;
       justify-content: flex-end;
       align-items: center;
       gap: 12px;
       margin-top: 10px;
+      z-index: 20;
     }
 
     .btn-restart {
@@ -299,23 +318,13 @@
       padding: 9px 20px;
       border-radius: 6px;
       cursor: pointer;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
     .btn-home:hover { opacity: 0.9; }
 
-    /* INVISIBLE NATIVE KEYBOARD CATCHER FOR DESKTOP & MOBILE */
-    #hiddenInput {
-      position: absolute;
-      top: -100px;
-      left: -100px;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* COMPLETION MODAL POPUP */
+    /* POPUP MODALS */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -361,9 +370,18 @@
       font-weight: 700;
       text-transform: uppercase;
     }
+
+    .about-list {
+      text-align: left;
+      font-size: 0.82rem;
+      color: #9cb3a8;
+      line-height: 1.6;
+      margin: 14px 0;
+    }
+    .about-list li { margin-bottom: 6px; }
   </style>
 </head>
-<body onclick="focusInput()">
+<body>
 
   <!-- TOP STRIP -->
   <div class="top-strip">
@@ -376,32 +394,30 @@
   </div>
 
   <div class="test-wrapper">
-    <!-- TITLES (IDENTICAL TO SCREENSHOT) -->
+    <!-- TITLES (EXACT SCREENSHOT LAYOUT) -->
     <div>
       <h1 class="main-heading">English Typing Speed Test Online - Check Your Words Per Minute (WPM)</h1>
       <h2 class="sub-heading">Online Typing Speed Test For Free</h2>
       <p class="desc-text">Take the 2-minute typing test to measure your typing speed over a moderate period. Improve your words-per-minute (WPM) skills with this effective typing challenge.</p>
     </div>
 
-    <!-- CONTROLS & STATUS BAR -->
+    <!-- STATUS BAR -->
     <div class="status-strip">
       <div class="status-left">
-        <!-- LESSON & GAME MODE SELECTOR -->
         <select class="pill-select" id="selGameMode" onchange="changeGameMode()">
-          <optgroup label="🎮 Speed Games & Lessons">
+          <optgroup label="🎮 Speed Lessons (Disguised as Games)">
             <option value="lesson_city" selected>🏎️ Level 1: City Cruise (Home Row: ASDF JKL;)</option>
-            <option value="lesson_highway">🏍️️ Level 2: Highway Sprint (Top Row: QWERTY)</option>
+            <option value="lesson_highway">🏍 Level 2: Highway Sprint (Top Row: QWERTY)</option>
             <option value="lesson_rally">🚚 Level 3: Off-Road Rally (Bottom Row: ZXCV)</option>
             <option value="lesson_nitro">⚡ Level 4: Nitro Rush (Numbers & Symbols)</option>
           </optgroup>
-          <optgroup label="📝 Official Exam Trials">
+          <optgroup label="📝 Official Benchmark Exams">
             <option value="exam_2m">🏆 2-Minute Standard Benchmark (Prose)</option>
             <option value="exam_3m">⚖️ 3-Minute Legal Court Order Test</option>
             <option value="exam_5m">🏢 5-Minute TCS / SSC Mock Test</option>
           </optgroup>
         </select>
 
-        <!-- VEHICLE MODEL SELECTOR -->
         <select class="pill-select" id="selVehicleModel" onchange="changeVehicleGraphic()">
           <option value="retro" selected>🚗 Classic Hatchback</option>
           <option value="sedan">🏎️ Cyber Sedan</option>
@@ -410,51 +426,41 @@
       </div>
 
       <div class="status-right">
-        <!-- TIMER -->
         <div class="metric-timer" id="valTimer">02:00</div>
-
-        <!-- WPM -->
         <div class="metric-wpm">
           <span>⏱ WPM</span>
           <b id="valWpm">0</b>
         </div>
-
-        <!-- SPEED BADGE -->
         <div class="speed-badge">
           <span>⚡ Speed</span>
         </div>
       </div>
     </div>
 
-    <!-- CAR TRACK -->
+    <!-- RETRO CAR TRACK -->
     <div class="track-section">
       <div class="dashed-lane"></div>
       
-      <!-- MOVING VEHICLE -->
       <div class="car-container" id="carContainer">
         <div class="car-badge" id="carBadgeWpm">0 WPM</div>
         
-        <!-- DETAILED SVG WHITE RETRO CAR FROM SCREENSHOT -->
         <svg class="retro-car-svg" id="vehicleSvg" viewBox="0 0 100 45" xmlns="http://www.w3.org/2000/svg">
-          <!-- Main Car Body (White with Clean Outlines) -->
           <path d="M 12 30 L 18 16 L 38 12 L 68 12 L 84 22 L 95 24 L 95 32 L 85 32 L 85 30 A 7 7 0 0 0 71 30 L 71 32 L 29 32 L 29 30 A 7 7 0 0 0 15 30 L 12 30 Z" 
                 fill="#ffffff" stroke="#1f2937" stroke-width="2.5" stroke-linejoin="round"/>
-          <!-- Windows -->
           <path d="M 22 17 L 38 14 L 38 23 L 22 23 Z" fill="#111827"/>
           <path d="M 42 14 L 66 14 L 78 23 L 42 23 Z" fill="#111827"/>
-          <!-- Wheels -->
           <circle cx="22" cy="31" r="6" fill="#111827" stroke="#ffffff" stroke-width="2"/>
           <circle cx="78" cy="31" r="6" fill="#111827" stroke="#ffffff" stroke-width="2"/>
-          <!-- Bumpers & Lights -->
           <rect x="9" y="27" width="4" height="4" fill="#9ca3af"/>
           <rect x="94" y="24" width="3" height="4" fill="#f59e0b"/>
         </svg>
       </div>
     </div>
 
-    <!-- TARGET PASSAGE DISPLAY -->
-    <div class="passage-card" id="passageCard">
-      <!-- Words rendered via JavaScript -->
+    <!-- PASSAGE + INPUT LAYER -->
+    <div class="passage-container" onclick="document.getElementById('directInput').focus()">
+      <div class="passage-card" id="passageCard"></div>
+      <input type="text" id="directInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus>
     </div>
 
     <!-- BOTTOM ACTION BUTTONS -->
@@ -462,20 +468,39 @@
       <button type="button" class="btn-restart" onclick="resetTest()">
         <span>↺</span> Restart Test
       </button>
-      <a href="https://unknownuniversem-blip.github.io/" class="btn-home">
+      <!-- "HOME" OPENS IN-APP ABOUT MODAL IN-PLACE WITHOUT LEAVING -->
+      <button type="button" class="btn-home" onclick="openHomeAbout()">
         <span>⎋</span> Home
-      </a>
+      </button>
     </div>
   </div>
 
-  <input type="text" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <!-- IN-APP "HOME" ABOUT MODAL (DOES NOT MOVE TO OTHER PLACE) -->
+  <div class="modal-overlay" id="homeAboutModal">
+    <div class="modal-card">
+      <div style="font-size:2.2rem; margin-bottom:4px;">🏎️</div>
+      <h3 style="font-size:1.2rem; font-weight:800; color:#fff;">About NitroTypers Online</h3>
+      <p style="font-size:0.8rem; color:#7b9488; margin-top:2px;">Online Typing Tutor & Vehicle Speed Benchmark</p>
 
-  <!-- RESULT POPUP -->
+      <ul class="about-list">
+        <li>🚗 <strong>Live Vehicle Physics:</strong> The retro hatchback accelerates across the track based on your real-time WPM.</li>
+        <li>⌨️ <strong>Structured Key Lessons:</strong> Practice Home Row (ASDF), Top Row (QWERTY), and Bottom Row (ZXCV) disguised as speed races.</li>
+        <li>📝 <strong>Exam-Grade Prose:</strong> Practice standard 2-Min, 3-Min Legal, and 5-Min TCS/SSC mock paragraphs.</li>
+        <li>🔒 <strong>Zero-Tracking Guarantee:</strong> 100% private, client-side, zero installations.</li>
+      </ul>
+
+      <button type="button" class="btn-restart" style="width:100%; justify-content:center; padding:11px;" onclick="closeHomeAbout()">
+        ✓ Continue Typing
+      </button>
+    </div>
+  </div>
+
+  <!-- COMPLETION REPORT MODAL -->
   <div class="modal-overlay" id="resultModal">
     <div class="modal-card">
       <div style="font-size:2.5rem; margin-bottom:4px;">🏆</div>
       <h3 style="font-size:1.3rem; font-weight:800; color:#fff;">Test Completed!</h3>
-      <p style="font-size:0.8rem; color:#7b9488; margin-top:2px;">Here is your verified typing evaluation:</p>
+      <p style="font-size:0.8rem; color:#7b9488; margin-top:2px;">Performance Summary:</p>
 
       <div class="modal-stats-grid">
         <div>
@@ -508,7 +533,6 @@
       lesson_highway: "qwerty uiop your tree root plot wipe peer quit power tweet write equip wire outer poetry",
       lesson_rally: "zxcvbnm zinc mixer zebra carbon cabin bacon bounce vapor venom comb crumb mimic zoom boxer",
       lesson_nitro: "order #1042 was processed for $589 at 90% discount with tracking code ID-8820 on 12/04/2026.",
-      // Exact Passage from your screenshot
       exam_2m: "Public confidence in, and support for, the euro - and, indeed, the European Union - will ultimately be determined by how well we manage economic transitions and protect institutional integrity across member states. Sustainable progress requires continuous discipline.",
       exam_3m: "The High Court bench observed that technological tools and digital document archiving facilitate faster judicial proceedings while maintaining data fidelity for citizens across the territory.",
       exam_5m: "Modern electronic administration demands that officers and clerical personnel possess verified keyboard proficiency. Clean typing without excessive backspacing prevents operational bottlenecks during critical competitive benchmarks."
@@ -518,31 +542,28 @@
     let wordStatus = [];
     let currentWordIdx = 0;
     let timerRunning = false;
-    let timeTotal = 120; // 2 minutes by default
+    let timeTotal = 120;
     let timeRemaining = 120;
     let timerInterval = null;
     let correctWordsCount = 0;
     let errorsCount = 0;
     let totalCharsTyped = 0;
 
-    const hiddenInput = document.getElementById('hiddenInput');
+    const directInput = document.getElementById('directInput');
     const carContainer = document.getElementById('carContainer');
     const carBadgeWpm = document.getElementById('carBadgeWpm');
 
     window.addEventListener('DOMContentLoaded', () => {
       loadSelectedPassage();
-      focusInput();
+      directInput.focus();
     });
 
-    function focusInput() {
-      hiddenInput.focus();
+    function openHomeAbout() {
+      document.getElementById('homeAboutModal').classList.add('active');
     }
-
-    // Auto-enter Fullscreen on user gesture
-    function requestAutoFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      }
+    function closeHomeAbout() {
+      document.getElementById('homeAboutModal').classList.remove('active');
+      directInput.focus();
     }
 
     function changeGameMode() {
@@ -550,8 +571,7 @@
       if (mode === 'exam_3m') timeTotal = 180;
       else if (mode === 'exam_5m') timeTotal = 300;
       else if (mode === 'exam_2m') timeTotal = 120;
-      else timeTotal = 60; // Key lessons are 1-min quick drills
-
+      else timeTotal = 60;
       loadSelectedPassage();
     }
 
@@ -576,9 +596,9 @@
           <circle cx="80" cy="30" r="5" fill="#0f172a" stroke="#fff" stroke-width="1.5"/>
         `;
       } else {
-        // Classic White Retro Hatchback (as in screenshot)
         svg.innerHTML = `
-          <path d="M 12 30 L 18 16 L 38 12 L 68 12 L 84 22 L 95 24 L 95 32 L 85 32 L 85 30 A 7 7 0 0 0 71 30 L 71 32 L 29 32 L 29 30 A 7 7 0 0 0 15 30 L 12 30 Z" fill="#ffffff" stroke="#1f2937" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M 12 30 L 18 16 L 38 12 L 68 12 L 84 22 L 95 24 L 95 32 L 85 32 L 85 30 A 7 7 0 0 0 71 30 L 71 32 L 29 32 L 29 30 A 7 7 0 0 0 15 30 L 12 30 Z" 
+                fill="#ffffff" stroke="#1f2937" stroke-width="2.5" stroke-linejoin="round"/>
           <path d="M 22 17 L 38 14 L 38 23 L 22 23 Z" fill="#111827"/>
           <path d="M 42 14 L 66 14 L 78 23 L 42 23 Z" fill="#111827"/>
           <circle cx="22" cy="31" r="6" fill="#111827" stroke="#ffffff" stroke-width="2"/>
@@ -597,46 +617,54 @@
       resetTest();
     }
 
-    function renderPassage() {
+    function renderPassage(typedCurrent = '') {
       const card = document.getElementById('passageCard');
       let html = '';
 
       for (let i = 0; i < wordsArray.length; i++) {
-        let cls = 'word-token';
-        if (i === currentWordIdx) {
-          cls += ' word-current';
-        } else if (wordStatus[i] === 'correct') {
-          cls += ' word-correct';
-        } else if (wordStatus[i] === 'wrong') {
-          cls += ' word-wrong';
-        }
+        const targetWord = wordsArray[i];
 
-        html += `<span class="${cls}" id="word_${i}">${wordsArray[i]}</span> `;
-        // Append active green cursor right after the current word
-        if (i === currentWordIdx) {
-          html += `<span class="caret-cursor"></span>`;
+        if (i < currentWordIdx) {
+          const cls = wordStatus[i] === 'correct' ? 'word-token word-correct' : 'word-token word-wrong';
+          html += `<span class="${cls}">${targetWord}</span> `;
+        } else if (i === currentWordIdx) {
+          // Render partial letters typed on the active word
+          let activeHtml = '';
+          for (let c = 0; c < targetWord.length; c++) {
+            if (c < typedCurrent.length) {
+              if (typedCurrent[c] === targetWord[c]) {
+                activeHtml += `<span class="char-typed-ok">${targetWord[c]}</span>`;
+              } else {
+                activeHtml += `<span class="char-typed-bad">${targetWord[c]}</span>`;
+              }
+            } else {
+              activeHtml += targetWord[c];
+            }
+          }
+          html += `<span class="word-token word-current" id="activeWord">${activeHtml}</span><span class="caret-cursor"></span> `;
+        } else {
+          html += `<span class="word-token">${targetWord}</span> `;
         }
       }
 
       card.innerHTML = html;
 
-      const activeEl = document.getElementById(`word_${currentWordIdx}`);
+      const activeEl = document.getElementById('activeWord');
       if (activeEl) {
         activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
     }
 
-    // Capture standard typing
-    hiddenInput.addEventListener('input', (e) => {
+    // Direct input event listener
+    directInput.addEventListener('input', (e) => {
       if (!timerRunning) {
-        requestAutoFullscreen();
         startTimer();
       }
 
-      const val = hiddenInput.value;
+      const val = directInput.value;
       totalCharsTyped++;
 
-      // Space or Enter denotes word completion
+      // When Space or Enter is pressed: finalize word
       if (val.endsWith(' ') || val.endsWith('\n')) {
         const typedWord = val.trim();
         const targetWord = wordsArray[currentWordIdx];
@@ -650,7 +678,7 @@
         }
 
         currentWordIdx++;
-        hiddenInput.value = '';
+        directInput.value = '';
 
         updateMetrics();
         renderPassage();
@@ -658,6 +686,9 @@
         if (currentWordIdx >= wordsArray.length) {
           finishTest();
         }
+      } else {
+        // Update active word characters in real-time
+        renderPassage(val);
       }
     });
 
@@ -684,7 +715,6 @@
       document.getElementById('valWpm').innerText = wpm;
       carBadgeWpm.innerText = `${wpm} WPM`;
 
-      // Drive Car smoothly along the track (left: 10px to right: calc(100% - 90px))
       const trackWidth = document.querySelector('.track-section').clientWidth - 90;
       const progress = Math.min(currentWordIdx / wordsArray.length, 1.0);
       carContainer.style.left = `${10 + (progress * trackWidth)}px`;
@@ -693,7 +723,7 @@
     function finishTest() {
       clearInterval(timerInterval);
       timerRunning = false;
-      hiddenInput.disabled = true;
+      directInput.disabled = true;
 
       const finalWpm = document.getElementById('valWpm').innerText;
       const totalAttempted = currentWordIdx;
@@ -723,9 +753,9 @@
       carBadgeWpm.innerText = '0 WPM';
       carContainer.style.left = '10px';
 
-      hiddenInput.value = '';
-      hiddenInput.disabled = false;
-      focusInput();
+      directInput.value = '';
+      directInput.disabled = false;
+      directInput.focus();
 
       renderPassage();
       document.getElementById('resultModal').classList.remove('active');
