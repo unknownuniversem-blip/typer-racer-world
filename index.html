@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>Nitro Typers - Racing Speed Test & Lessons</title>
-  <meta name="description" content="Free browser typing tutor and vehicle race. Master home row keys, practice official exam paragraphs, and race cars, bikes, and trucks.">
+  <title>NitroTypers World - 60FPS Racer & Typing Lessons</title>
+  <meta name="description" content="Ultra-smooth 60FPS vehicle typing racer and progressive key academy. Race cars, bikes, trucks, and starfighters.">
 
   <!-- Privacy Analytics -->
   <script data-goatcounter="https://quicktools.goatcounter.com/count"
@@ -17,11 +17,12 @@
     :root {
       --bg: #030712;
       --card: #0f172a;
-      --border: #1e293b;
+      --card-border: #1e293b;
       --primary: #f59e0b;
       --accent: #38bdf8;
       --success: #10b981;
       --danger: #ef4444;
+      --purple: #c084fc;
       --text: #f8fafc;
       --muted: #94a3b8;
     }
@@ -32,6 +33,7 @@
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
+      touch-action: none;
     }
 
     html, body {
@@ -48,7 +50,7 @@
     .app-header {
       height: 38px;
       background: #060a17;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--card-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -78,10 +80,11 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      transition: all 0.15s ease;
     }
-    .corner-badge:hover { background: rgba(56, 189, 248, 0.25); }
+    .corner-badge:hover { background: rgba(56, 189, 248, 0.3); transform: scale(1.02); }
 
-    /* MAIN VIEWPORT WRAPPER */
+    /* MAIN VIEWPORT */
     .main-viewport {
       flex: 1;
       height: calc(100vh - 38px);
@@ -91,75 +94,22 @@
       position: relative;
     }
 
-    /* TRACK AREA (TOP HALF) */
-    .race-track-container {
+    /* 60FPS RACETRACK CANVAS */
+    #trackCanvas {
+      width: 100%;
       height: 38%;
-      background: #090e1c;
-      border-bottom: 2px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      padding: 6px 12px;
+      background: #090e1e;
+      display: block;
+      border-bottom: 2px solid var(--card-border);
     }
 
-    .track-lane {
-      position: relative;
-      height: 26%;
-      background: rgba(15, 23, 42, 0.6);
-      border-radius: 8px;
-      border: 1px dashed rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-    }
-
-    .racer-node {
-      position: absolute;
-      left: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: left 0.1s linear;
-    }
-
-    .racer-icon {
-      font-size: 1.6rem;
-      filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5));
-    }
-    .racer-label {
-      font-size: 0.68rem;
-      font-weight: 800;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #cbd5e1;
-    }
-
-    .finish-line {
-      position: absolute;
-      right: 18px;
-      top: 0;
-      bottom: 0;
-      width: 14px;
-      background: repeating-linear-gradient(
-        45deg,
-        #fff,
-        #fff 6px,
-        #000 6px,
-        #000 12px
-      );
-      opacity: 0.8;
-      border-radius: 2px;
-    }
-
-    /* TYPING CONSOLE (BOTTOM HALF) */
+    /* BOTTOM TYPING CONSOLE */
     .console-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       padding: 10px 14px;
-      gap: 10px;
+      gap: 8px;
       background: var(--bg);
       max-width: 980px;
       width: 100%;
@@ -167,7 +117,7 @@
       overflow: hidden;
     }
 
-    /* CONTROLS STRIP */
+    /* CONTROLS TOOLBAR */
     .console-toolbar {
       display: flex;
       align-items: center;
@@ -178,10 +128,10 @@
 
     .select-dropdown {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       color: #fff;
       font-size: 0.76rem;
-      font-weight: 700;
+      font-weight: 800;
       padding: 4px 8px;
       border-radius: 6px;
       outline: none;
@@ -190,7 +140,7 @@
 
     .stat-pill {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       padding: 2px 8px;
       border-radius: 6px;
       font-size: 0.75rem;
@@ -203,7 +153,7 @@
 
     .btn-action {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       color: #fff;
       padding: 4px 10px;
       border-radius: 6px;
@@ -214,15 +164,17 @@
       align-items: center;
       gap: 4px;
       height: 28px;
+      transition: all 0.15s ease;
     }
     .btn-action:hover { border-color: var(--accent); }
-    .btn-danger { color: #fca5a5; border-color: rgba(239, 68, 68, 0.4); }
+    .btn-danger { color: #fca5a5; border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.15); }
+    .btn-danger:hover { border-color: var(--danger); background: rgba(239, 68, 68, 0.3); }
 
-    /* PASSAGE DISPLAY (AUTOSCROLLING VIEWPORT) */
+    /* PASSAGE DISPLAY */
     .passage-card {
       flex: 1;
       background: var(--card);
-      border: 1.5px solid var(--border);
+      border: 1.5px solid var(--card-border);
       border-radius: 10px;
       padding: 14px 16px;
       font-size: 1.25rem;
@@ -233,9 +185,11 @@
       word-break: normal;
       overflow-wrap: break-word;
     }
+    .passage-card::-webkit-scrollbar { width: 5px; }
+    .passage-card::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 
-    .token-word { display: inline; padding: 1px 2px; border-radius: 3px; }
-    .token-current { background: var(--primary); color: #020617; font-weight: 900; }
+    .token-word { display: inline; padding: 1px 3px; border-radius: 3px; }
+    .token-current { background: var(--primary); color: #020617; font-weight: 900; box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
     .token-correct { color: var(--success); }
     .token-wrong { background: rgba(239, 68, 68, 0.35); color: var(--danger); }
 
@@ -268,7 +222,7 @@
       position: fixed;
       inset: 0;
       background: rgba(2, 6, 23, 0.94);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -279,12 +233,13 @@
 
     .modal-box {
       background: var(--card);
-      border: 1.5px solid var(--border);
+      border: 1.5px solid var(--card-border);
       border-radius: 14px;
       max-width: 440px;
       width: 100%;
-      padding: 20px;
+      padding: 22px;
       text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
     }
 
     .score-summary-grid {
@@ -293,7 +248,7 @@
       gap: 10px;
       margin: 14px 0;
       background: #060a17;
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 12px;
       text-align: left;
@@ -311,6 +266,29 @@
       font-weight: 900;
       cursor: pointer;
       width: 100%;
+      transition: transform 0.1s ease;
+    }
+    .btn-primary-big:active { transform: scale(0.97); }
+
+    /* MOBILE FLOATING KEYBOARD HELPER */
+    .btn-mobile-keyboard {
+      display: none;
+      position: absolute;
+      bottom: 60px;
+      right: 14px;
+      z-index: 25;
+      background: rgba(56, 189, 248, 0.25);
+      border: 1px solid var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+    }
+    @media (pointer: coarse) {
+      .btn-mobile-keyboard { display: block; }
     }
   </style>
 </head>
@@ -320,7 +298,7 @@
   <header class="app-header">
     <div class="brand-title">
       <span>🏎️ NitroTypers</span>
-      <span style="font-size:0.7rem; color:var(--muted); font-weight:700;">Speed & Lessons</span>
+      <span style="font-size:0.7rem; color:var(--muted); font-weight:700;">60FPS Racer & Academy</span>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
       <a href="https://unknownuniversem-blip.github.io/type-arcade/" class="corner-badge" style="border-color:rgba(245,158,11,0.5); color:var(--primary);">
@@ -333,58 +311,38 @@
   </header>
 
   <div class="main-viewport">
-    <!-- TOP TRACK: RACE PROGRESS ANIMATION -->
-    <div class="race-track-container">
-      <div class="finish-line"></div>
+    <!-- 60FPS RACETRACK CANVAS -->
+    <canvas id="trackCanvas"></canvas>
 
-      <!-- PLAYER LANE -->
-      <div class="track-lane">
-        <div class="racer-node" id="playerVehicle" style="left: 10px;">
-          <span class="racer-icon" id="vehicleIcon">🏎️</span>
-          <span class="racer-label" style="color:var(--primary);">YOU</span>
-        </div>
-      </div>
-
-      <!-- AI BOT 1 LANE -->
-      <div class="track-lane">
-        <div class="racer-node" id="botVehicle1" style="left: 10px;">
-          <span class="racer-icon">🏍️</span>
-          <span class="racer-label">Speedy AI (35 WPM)</span>
-        </div>
-      </div>
-
-      <!-- AI BOT 2 LANE -->
-      <div class="track-lane">
-        <div class="racer-node" id="botVehicle2" style="left: 10px;">
-          <span class="racer-icon">🚚</span>
-          <span class="racer-label">Nitro Bot (48 WPM)</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- BOTTOM CONSOLE: TYPING LESSONS & EXAM PROSE -->
+    <!-- TYPING CONSOLE & CURRICULUM -->
     <div class="console-container">
       <div class="console-toolbar">
         <div style="display:flex; align-items:center; gap:6px;">
           <!-- VEHICLE SELECTOR -->
           <select class="select-dropdown" id="selVehicle" onchange="changeVehicle()">
-            <option value="🏎️" selected>🏎️ Sports Car</option>
-            <option value="🏍️">🏍️ Superbike</option>
-            <option value="🚚">🚚 Cyber Truck</option>
-            <option value="🚀">🚀 Hovercraft</option>
+            <option value="car" selected>🏎️ Cyber Supercar</option>
+            <option value="bike">🏍️ Neon Superbike</option>
+            <option value="truck">🚚 War Truck</option>
+            <option value="ship">🚀 Starfighter</option>
+            <option value="board">🛹 Jet Board</option>
           </select>
 
-          <!-- LESSON & EXAM SELECTOR -->
+          <!-- LESSONS / RACES / EXAMS -->
           <select class="select-dropdown" id="selCategory" onchange="loadCategory()">
-            <optgroup label="⌨️ Fundamental Key Lessons">
+            <optgroup label="⌨️ Key Academy (Beginner)">
               <option value="lesson_home" selected>Lesson 1: Home Row (ASDF JKL;)</option>
               <option value="lesson_top">Lesson 2: Top Row (QWERTY UIOP)</option>
               <option value="lesson_bottom">Lesson 3: Bottom Row (ZXCVBNM)</option>
               <option value="lesson_numbers">Lesson 4: Numbers & Symbols</option>
             </optgroup>
-            <optgroup label="📝 Official Exam Speed Trials">
-              <option value="exam_1m">1-Min Fast Trial (General Prose)</option>
-              <option value="exam_3m">3-Min Medium Trial (Legal & Court)</option>
+            <optgroup label="🏎️ AI Drag Races">
+              <option value="race_novice">Novice Drag Race (35 WPM Bot)</option>
+              <option value="race_pro">Pro Nitro Race (55 WPM Bot)</option>
+              <option value="race_godlike">Godlike Sprint (85 WPM Bot)</option>
+            </optgroup>
+            <optgroup label="📝 Official Exam Speed Mocks">
+              <option value="exam_1m">1-Min High Court Sprint</option>
+              <option value="exam_3m">3-Min Legal Bench Prose</option>
               <option value="exam_5m">5-Min TCS/SSC Standard Mock</option>
             </optgroup>
           </select>
@@ -401,25 +359,26 @@
             <span id="valAcc">100%</span>
           </div>
 
-          <button type="button" class="btn-action" onclick="toggleFullScreen()">🖥️ Fullscreen</button>
-          <button type="button" class="btn-action btn-danger" onclick="stopTest()">⏹ End Test</button>
+          <button type="button" class="btn-action" id="btnOrientToggle" onclick="toggleScreenOrientation()">🔄 Rotate</button>
+          <button type="button" class="btn-action" onclick="toggleFullScreen()">🖥️ Full</button>
+          <button type="button" class="btn-action btn-danger" onclick="stopTest()">⏹ END</button>
         </div>
       </div>
 
       <!-- AUTO-SCROLLING TARGET PASSAGE -->
-      <div class="passage-card" id="passageDisplay">
-        Loading Lesson...
-      </div>
+      <div class="passage-card" id="passageDisplay">Loading Lesson...</div>
 
       <!-- DIRECT INPUT CONSOLE -->
       <div class="input-wrapper">
         <input type="text" class="typing-box" id="typingInput"
-               placeholder="Type here (press Space after each word)..."
+               placeholder="Type here (press Space after each word to accelerate)..."
                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                autofocus oninput="handleTyping(event)">
       </div>
     </div>
   </div>
+
+  <button type="button" class="btn-mobile-keyboard" onclick="focusKeyboard()">⌨️ Keyboard</button>
 
   <!-- FINISH REPORT MODAL -->
   <div class="overlay-modal" id="resultModal">
@@ -438,7 +397,7 @@
           <span>Accuracy</span>
         </div>
         <div class="summary-item">
-          <strong id="repRank" style="color:var(--primary);">1st Place</strong>
+          <strong id="repRank" style="color:var(--primary);">1st Place 🥇</strong>
           <span>Track Rank</span>
         </div>
         <div class="summary-item">
@@ -457,11 +416,19 @@
       lesson_top: "qwerty uiop your tree root plot wipe peer quit power tweet write equip wire outer poetry",
       lesson_bottom: "zxcvbnm zinc mixer zebra carbon cabin bacon bounce vapor venom comb crumb mimic zoom boxer",
       lesson_numbers: "order #1042 was processed for $589 at 90% discount with tracking code ID-8820 on 12/04/2026.",
+      race_novice: "The engine fires up as the green light flashes on the cyber highway. Acceleration demands absolute focus and clean keystrokes.",
+      race_pro: "High velocity typing channels pure kinetic momentum. Never hesitate on complex letter sequences when drafting behind rivals.",
+      race_godlike: "Supersonic reflexes conquer the ultimate drag circuit. Seamless cadence without backspacing guarantees podium victory every round.",
       exam_1m: "Speed and accuracy are the foundation of professional keyboard competency. Daily repetition builds permanent muscle memory across both hands.",
       exam_3m: "The High Court bench observed that technological tools and digital document archiving facilitate faster judicial proceedings while maintaining data fidelity for citizens.",
       exam_5m: "Modern electronic administration demands that officers and clerical personnel possess verified keyboard proficiency. Clean typing without excessive backspacing prevents operational bottlenecks during critical competitive benchmarks."
     };
 
+    const trackCanvas = document.getElementById('trackCanvas');
+    const ctx = trackCanvas.getContext('2d');
+
+    let selectedVehicle = 'car';
+    let currentOrientation = 'portrait';
     let wordList = [];
     let wordStatus = [];
     let currentIdx = 0;
@@ -469,19 +436,34 @@
     let timeTotal = 60;
     let timeRemaining = 60;
     let timerInterval = null;
-    let botInterval = null;
     let correctCount = 0;
     let errorCount = 0;
-    let bot1Progress = 0;
-    let bot2Progress = 0;
+
+    // 60FPS PHYSICS STATE
+    let playerTargetX = 0;
+    let playerX = 0;
+    let bot1X = 0;
+    let bot2X = 0;
+    let bot1SpeedWpm = 35;
+    let bot2SpeedWpm = 48;
+    let particles = [];
+    let trackDashesOffset = 0;
+    let animFrame = null;
+
+    function resizeCanvas() {
+      trackCanvas.width = trackCanvas.clientWidth;
+      trackCanvas.height = trackCanvas.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
 
     window.addEventListener('DOMContentLoaded', () => {
+      resizeCanvas();
       loadCategory();
+      requestAnimationFrame(renderLoop);
     });
 
     function changeVehicle() {
-      const icon = document.getElementById('selVehicle').value;
-      document.getElementById('vehicleIcon').innerText = icon;
+      selectedVehicle = document.getElementById('selVehicle').value;
     }
 
     function toggleFullScreen() {
@@ -489,6 +471,37 @@
         document.documentElement.requestFullscreen().catch(() => {});
       } else {
         if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    async function toggleScreenOrientation() {
+      try {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        }
+        if (screen.orientation && screen.orientation.lock) {
+          if (currentOrientation === 'portrait') {
+            await screen.orientation.lock('landscape');
+            currentOrientation = 'landscape';
+            document.getElementById('btnOrientToggle').innerText = '🔄 Port';
+          } else {
+            await screen.orientation.lock('portrait');
+            currentOrientation = 'portrait';
+            document.getElementById('btnOrientToggle').innerText = '🔄 Land';
+          }
+        }
+      } catch (e) {
+        currentOrientation = (currentOrientation === 'portrait') ? 'landscape' : 'portrait';
+        document.getElementById('btnOrientToggle').innerText = (currentOrientation === 'portrait') ? '🔄 Land' : '🔄 Port';
+      }
+      setTimeout(resizeCanvas, 200);
+    }
+
+    function focusKeyboard() {
+      const input = document.getElementById('typingInput');
+      if (input) {
+        input.focus();
+        input.click();
       }
     }
 
@@ -501,6 +514,12 @@
       if (cat === 'exam_3m') timeTotal = 180;
       else if (cat === 'exam_5m') timeTotal = 300;
       else timeTotal = 60;
+
+      // Adjust Bot AI target speeds
+      if (cat === 'race_novice') { bot1SpeedWpm = 25; bot2SpeedWpm = 35; }
+      else if (cat === 'race_pro') { bot1SpeedWpm = 45; bot2SpeedWpm = 55; }
+      else if (cat === 'race_godlike') { bot1SpeedWpm = 70; bot2SpeedWpm = 85; }
+      else { bot1SpeedWpm = 30; bot2SpeedWpm = 45; }
 
       resetTrial();
     }
@@ -534,6 +553,8 @@
         if (typed === target) {
           wordStatus[currentIdx] = 'correct';
           correctCount++;
+          // Trigger nitro thrust
+          createNitroBurst(playerX, 0);
         } else {
           wordStatus[currentIdx] = 'wrong';
           errorCount++;
@@ -562,23 +583,10 @@
 
         if (timeRemaining <= 0) finishTrial();
       }, 1000);
-
-      // AI Bots Simulators
-      botInterval = setInterval(() => {
-        bot1Progress += 0.8;
-        bot2Progress += 1.1;
-
-        const maxPx = window.innerWidth - 80;
-        const b1Left = Math.min((bot1Progress / wordList.length) * maxPx, maxPx);
-        const b2Left = Math.min((bot2Progress / wordList.length) * maxPx, maxPx);
-
-        document.getElementById('botVehicle1').style.left = `${10 + b1Left}px`;
-        document.getElementById('botVehicle2').style.left = `${10 + b2Left}px`;
-      }, 1000);
     }
 
     function updateMetrics() {
-      const elapsedMin = Math.max((timeTotal - timeRemaining) / 60, 0.05);
+      const elapsedMin = Math.max((timeTotal - timeRemaining) / 60, 0.04);
       const wpm = Math.max(0, Math.round(correctCount / elapsedMin));
       const totalAttempted = currentIdx;
       const acc = totalAttempted > 0 ? Math.max(0, Math.round((correctCount / totalAttempted) * 100)) : 100;
@@ -586,10 +594,177 @@
       document.getElementById('valWpm').innerText = wpm;
       document.getElementById('valAcc').innerText = `${acc}%`;
 
-      // Update Player Track Position
-      const maxPx = window.innerWidth - 80;
+      // Update target player track position
       const progressRatio = currentIdx / wordList.length;
-      document.getElementById('playerVehicle').style.left = `${10 + (progressRatio * maxPx)}px`;
+      playerTargetX = progressRatio;
+    }
+
+    function createNitroBurst(relX, laneIdx) {
+      const w = trackCanvas.width;
+      const laneH = trackCanvas.height / 3;
+      const startX = 20 + relX * (w - 100);
+      const startY = laneIdx * laneH + laneH / 2;
+
+      for (let i = 0; i < 14; i++) {
+        particles.push({
+          x: startX - 8,
+          y: startY + (Math.random() - 0.5) * 8,
+          vx: -(Math.random() * 5 + 3),
+          vy: (Math.random() - 0.5) * 3,
+          life: 1.0,
+          color: Math.random() > 0.4 ? '#f59e0b' : '#38bdf8'
+        });
+      }
+    }
+
+    /* 60FPS RENDERING LOOP WITH SMOOTH LERP */
+    function renderLoop() {
+      ctx.clearRect(0, 0, trackCanvas.width, trackCanvas.height);
+
+      const w = trackCanvas.width;
+      const h = trackCanvas.height;
+      const laneH = h / 3;
+      const maxTrackX = w - 90;
+
+      // Smooth Physics Interpolation (Lerp)
+      playerX += (playerTargetX - playerX) * 0.12;
+
+      // AI Bots Progress Interpolation based on elapsed time and target WPM
+      if (timerRunning) {
+        const elapsedMin = Math.max((timeTotal - timeRemaining) / 60, 0.001);
+        const bot1Words = bot1SpeedWpm * elapsedMin;
+        const bot2Words = bot2SpeedWpm * elapsedMin;
+        bot1X = Math.min(bot1Words / wordList.length, 1.0);
+        bot2X = Math.min(bot2Words / wordList.length, 1.0);
+      }
+
+      // Draw 3 Asphalt Lanes with Neon Dividers
+      trackDashesOffset -= timerRunning ? 3.5 : 0.5;
+      for (let i = 0; i < 3; i++) {
+        const laneY = i * laneH;
+        // Lane background
+        ctx.fillStyle = (i % 2 === 0) ? '#080d1a' : '#0a1022';
+        ctx.fillRect(0, laneY, w, laneH);
+
+        // Dashed Divider Line
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([16, 12]);
+        ctx.lineDashOffset = trackDashesOffset;
+        ctx.beginPath();
+        ctx.moveTo(0, laneY);
+        ctx.lineTo(w, laneY);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]); // Reset dash
+
+      // Finish Line (Checkerboard)
+      const finishX = w - 40;
+      const checkerSize = 6;
+      for (let y = 0; y < h; y += checkerSize) {
+        for (let x = finishX; x < finishX + 18; x += checkerSize) {
+          const isWhite = ((x + y) / checkerSize) % 2 === 0;
+          ctx.fillStyle = isWhite ? '#ffffff' : '#030712';
+          ctx.fillRect(x, y, checkerSize, checkerSize);
+        }
+      }
+
+      // Draw Vehicle Function (Shapes & Silhouettes)
+      function drawVehicle(xPos, laneIdx, type, isPlayer, label) {
+        const cx = 25 + xPos * maxTrackX;
+        const cy = laneIdx * laneH + laneH / 2;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        // Vehicle Body Graphics
+        if (type === 'car') {
+          // Cyber Supercar
+          ctx.fillStyle = isPlayer ? '#f59e0b' : '#38bdf8';
+          ctx.fillRect(-22, -9, 38, 18);
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(-8, -6, 16, 12);
+          // Neon Headlight
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(16, -7, 3, 14);
+        } else if (type === 'bike') {
+          // Neon Superbike
+          ctx.fillStyle = isPlayer ? '#f59e0b' : '#10b981';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 18, 6, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(-14, 0, 4, 0, Math.PI * 2);
+          ctx.arc(14, 0, 4, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (type === 'truck') {
+          // Armored Truck
+          ctx.fillStyle = isPlayer ? '#f59e0b' : '#a855f7';
+          ctx.fillRect(-26, -11, 48, 22);
+          ctx.fillStyle = '#060a17';
+          ctx.fillRect(8, -8, 12, 16);
+        } else if (type === 'ship') {
+          // Starfighter
+          ctx.fillStyle = isPlayer ? '#f59e0b' : '#ec4899';
+          ctx.beginPath();
+          ctx.moveTo(22, 0);
+          ctx.lineTo(-18, -12);
+          ctx.lineTo(-10, 0);
+          ctx.lineTo(-18, 12);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          // Jet Board
+          ctx.fillStyle = isPlayer ? '#f59e0b' : '#f43f5e';
+          ctx.beginPath();
+          ctx.roundRect(-20, -5, 40, 10, 5);
+          ctx.fill();
+        }
+
+        // Thruster Glow
+        ctx.fillStyle = '#38bdf8';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 10;
+        ctx.fillRect(-26, -3, 4, 6);
+        ctx.shadowBlur = 0;
+
+        // Label Tag
+        ctx.font = "bold 9px system-ui";
+        ctx.fillStyle = isPlayer ? '#f59e0b' : '#94a3b8';
+        ctx.textAlign = "center";
+        ctx.fillText(label, 0, -14);
+
+        ctx.restore();
+      }
+
+      // 1. Draw Player Vehicle (Lane 0)
+      drawVehicle(playerX, 0, selectedVehicle, true, "YOU");
+
+      // 2. Draw Bot 1 (Lane 1)
+      drawVehicle(bot1X, 1, 'bike', false, `AI Bot (${bot1SpeedWpm} WPM)`);
+
+      // 3. Draw Bot 2 (Lane 2)
+      drawVehicle(bot2X, 2, 'truck', false, `Rival AI (${bot2SpeedWpm} WPM)`);
+
+      // Render & Update Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.04;
+
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        } else {
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.life;
+          ctx.fillRect(p.x, p.y, 3, 3);
+          ctx.globalAlpha = 1.0;
+        }
+      }
+
+      requestAnimationFrame(renderLoop);
     }
 
     function stopTest() {
@@ -599,7 +774,6 @@
 
     function finishTrial() {
       clearInterval(timerInterval);
-      clearInterval(botInterval);
       timerRunning = false;
       document.getElementById('typingInput').disabled = true;
 
@@ -610,13 +784,9 @@
       document.getElementById('repAcc').innerText = finalAcc;
       document.getElementById('repErrors').innerText = errorCount;
 
-      const playerPx = parseFloat(document.getElementById('playerVehicle').style.left || '10');
-      const b1Px = parseFloat(document.getElementById('botVehicle1').style.left || '10');
-      const b2Px = parseFloat(document.getElementById('botVehicle2').style.left || '10');
-
       let rank = "1st Place 🥇";
-      if (playerPx < b2Px && playerPx < b1Px) rank = "3rd Place 🥉";
-      else if (playerPx < b2Px || playerPx < b1Px) rank = "2nd Place 🥈";
+      if (playerX < bot2X && playerX < bot1X) rank = "3rd Place 🥉";
+      else if (playerX < bot2X || playerX < bot1X) rank = "2nd Place 🥈";
 
       document.getElementById('repRank').innerText = rank;
       document.getElementById('resultModal').classList.add('active');
@@ -624,13 +794,15 @@
 
     function resetTrial() {
       clearInterval(timerInterval);
-      clearInterval(botInterval);
       timerRunning = false;
       currentIdx = 0;
       correctCount = 0;
       errorCount = 0;
-      bot1Progress = 0;
-      bot2Progress = 0;
+      playerX = 0;
+      playerTargetX = 0;
+      bot1X = 0;
+      bot2X = 0;
+      particles = [];
       timeRemaining = timeTotal;
 
       const m = Math.floor(timeRemaining / 60);
@@ -638,10 +810,6 @@
       document.getElementById('valTimer').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
       document.getElementById('valWpm').innerText = '0';
       document.getElementById('valAcc').innerText = '100%';
-
-      document.getElementById('playerVehicle').style.left = '10px';
-      document.getElementById('botVehicle1').style.left = '10px';
-      document.getElementById('botVehicle2').style.left = '10px';
 
       const input = document.getElementById('typingInput');
       input.value = '';
